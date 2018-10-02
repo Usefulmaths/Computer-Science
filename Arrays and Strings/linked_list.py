@@ -141,10 +141,10 @@ class LinkedList(object):
 
         node = self.head_value
         while node.link is not None:
-            string += str(node.value) + " -> "
+            string += "%s (%s) -> " % (str(node.value), str(node.priority))
             node = node.link
 
-        string += str(node.value)
+        string += "%s (%s)" % (str(node.value), str(node.priority))
 
         return string
 
