@@ -89,20 +89,18 @@ class Graph(object):
     def get_adjacency_matrix(self):
         number_of_nodes = len(self.nodes)
 
-        connections = []
+        adjacency_matrix = []
 
         for i in range(number_of_nodes):
             connection = [0] * number_of_nodes
-            connections.append(connection)
+            adjacency_matrix.append(connection)
 
         for edge in self.edges:
             node_to = edge.node_to.value
             node_from = edge.node_from.value
 
-            connections[node_from][node_to] = edge.value
-            connections[node_to][node_from] = edge.value
-
-        adjacency_matrix = []
+            adjacency_matrix[node_from][node_to] = edge.value
+            adjacency_matrix[node_to][node_from] = edge.value
 
         return adjacency_matrix
 
