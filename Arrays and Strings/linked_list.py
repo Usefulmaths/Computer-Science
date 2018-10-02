@@ -1,9 +1,9 @@
-
 class Node(object):
     '''
     A class that represents a Node in a
     LinkedList.
     '''
+
     def __init__(self, value):
         self.value = value
         self.link = None
@@ -12,15 +12,23 @@ class Node(object):
         return None
 
 
+class PriorityNode(Node):
+
+    def __init__(self, value, priority):
+        super().__init__(value)
+        self.priority = priority
+
+
 class LinkedList(object):
     '''
     A class that represents a Linked List.
     '''
+
     def __init__(self):
         self.head_value = None
         self.num_nodes = 0
 
-    def append(self, value):
+    def append(self, value, priority=-1):
         '''
         Inserts a value at the head of the linked list.
 
@@ -29,7 +37,7 @@ class LinkedList(object):
         '''
 
         # Creates a Node object that stores a value.
-        node = Node(value)
+        node = PriorityNode(value, priority)
         current = self.head_value
 
         # If the Linked List is empty, set Node to head.
@@ -50,6 +58,9 @@ class LinkedList(object):
         count = 0
         node = self.head_value
 
+        if node is None:
+            return
+
         if index == 0:
             self.head_value = node.link
             del node
@@ -62,9 +73,11 @@ class LinkedList(object):
 
             previous_node.link = node.link
 
-    def insert(self, value, index):
+        self.num_nodes -= 1
+
+    def insert(self, value, index, priority=-1):
         current_node = self.head_value
-        new_node = Node(value)
+        new_node = PriorityNode(value, priority)
 
         if index == 0:
             new_node.link = current_node
@@ -79,6 +92,8 @@ class LinkedList(object):
             next_node = current_node.link
             new_node.link = next_node
             current_node.link = new_node
+
+        self.num_nodes += 1
 
     def index(self, ind):
         '''
@@ -96,13 +111,30 @@ class LinkedList(object):
         count = 0
 
         node = self.head_value
+
         while count != ind:
             node = node.link
             count += 1
 
+        if node is None:
+            return None
+
         value = node.value
 
-        return value
+        if node.priority == -1:
+            return value
+
+        else:
+            return node
+
+    def search(self, value):
+        for i in range(self.num_nodes - 1):
+            ind_value = self.index(i)
+
+            if(ind_value == value):
+                return True
+
+        return False
 
     def __str__(self):
         string = ''
