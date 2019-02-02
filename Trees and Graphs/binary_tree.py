@@ -17,67 +17,102 @@ class BinaryTree(object):
     def __init__(self):
         self.root = None
 
-    def insert(self, value, current_node=None):
+    def insert(self, value):
         '''
-        A recursive method for the insertion of a node in a binary tree. Uses
-        a Depth-First approach in finding an empty child.
+        Inserts a node into the tree using a breadth-first approach.
 
         Arguments:
-            node: the node that needs inserting
-            current_node: current_node being access for empty spaces.
+            value: the value to be stored in the node
         '''
-        node = Node(value)
+
         if self.root is None:
-            self.root = node
-            return
-
-        if current_node is None:
-            current_node = self.root
-
-        if current_node.left is None:
-            current_node.left = node
-            return True
-
-        elif current_node.right is None:
-            current_node.right = node
-            return True
+            self.root = Node(value)
 
         else:
-            return self.insert(value, current_node.left) or self.insert(value, current_node.right)
+            queue = [self.root]
 
-    def search(self, value, parent_node='root'):
+            while len(queue) != 0:
+                node = queue[0]
+
+                if node.left is None:
+                    node.left = Node(value)
+                    return value
+
+                elif node.right is None:
+                    node.right = Node(value)
+                    return value
+
+                del queue[0]
+                queue.append(node.left)
+                queue.append(node.right)
+
+    def search(self, value, type='dfs'):
         '''
-        A recursive search method using pre-order Depth-First search to find
-        a certain node in the binary tree.
+        Searches through the tree for a specific value using either 
+        Depth-First Search (dfs) or Breadth-First Search. These implementations
+        use a Stack/ Queue respectively.
 
         Arguments:
-            value: the value to search for.
-            parent_node: the current node being searched for the value.
+            value: the value of the node we are looking for.
+            type: dfs or bfs
+
+        Return:
+            a boolean saying whether the value is in the tree or not.
         '''
-        if parent_node is 'root':
-            parent_node = self.root
+        if type == 'dfs':
+            stack = [self.root]
 
-        # Pre-order
-        if parent_node:
-            if parent_node.value == value:
-                return True
+            while len(stack) != 0:
+                node = stack[0]
 
-            else:
-                return self.search(value, parent_node.left) or self.search(value, parent_node.right)
+                if node.value == value:
+                    return True
 
-        else:
+                stack.pop(0)
+
+                if node.right is not None:
+                    stack.insert(0, node.right)
+
+                if node.left is not None:
+                    stack.insert(0, node.left)
+
+            return False
+
+        elif type == 'bfs':
+            queue = [self.root]
+
+            while len(queue) != 0:
+                node = queue[0]
+
+                if node.value == value:
+                    return True
+
+                queue.pop(0)
+
+                if node.left is not None:
+                    queue.append(node.left)
+
+                if node.right is not None:
+                    queue.append(node.right)
+
             return False
 
 
 if __name__ == '__main__':
     binary_tree = BinaryTree()
 
-    for i in range(10):
+    # Insert values breadth-first
+    for i in range(100):
         binary_tree.insert(i)
 
-    print(binary_tree.search(0))
-    print(binary_tree.search(4))
-    print(binary_tree.search(7))
-    print(binary_tree.search(9))
-    print(binary_tree.search(10))
-    print(binary_tree.search(-1))
+    # In the tree
+    print(binary_tree.search(54, type='dfs'))
+
+    # In the tree
+    print(binary_tree.search(54, type='bfs'))
+
+    # Not in the tree
+    print(binary_tree.search(-1, type='dfs'))
+
+    # Not in the tree
+    print(binary_tree.search(-1, type='bfs'))
